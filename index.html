@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="AlphaRamos Roulette - Ruleta de sorteos para AlphaRamos Hackathon 2026" />
+  <title>AlphaRamos Roulette · Hackathon 2026</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Decorative tech background layer -->
+  <div class="bg-decor" aria-hidden="true">
+    <span class="bg-glyph bg-glyph--1">&lt;/&gt;</span>
+    <span class="bg-glyph bg-glyph--2">{ }</span>
+    <span class="bg-glyph bg-glyph--3">&lt;/&gt;</span>
+    <div class="bg-grid"></div>
+  </div>
+
+  <div class="app" id="app">
+    <!-- ===================== HEADER ===================== -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-logo" aria-hidden="true">
+          <!-- AlphaRamos mark: two-stroke A + code symbol -->
+          <svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="AlphaRamos">
+            <defs>
+              <linearGradient id="aGrad" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0" stop-color="#0066FF" />
+                <stop offset="0.5" stop-color="#00C2FF" />
+                <stop offset="1" stop-color="#A256FF" />
+              </linearGradient>
+            </defs>
+            <path d="M14 52 L30 12 L38 12 L30 34 L22 34 Z" fill="url(#aGrad)" />
+            <path d="M34 52 L50 12 L42 12 L30 44 Z" fill="url(#aGrad)" opacity="0.92" />
+            <text x="41" y="49" font-family="monospace" font-size="12" font-weight="700" fill="#00C2FF">&lt;/&gt;</text>
+          </svg>
+        </span>
+        <div class="brand-text">
+          <span class="brand-line-1">ALPHA<span class="accent">RAMOS</span></span>
+          <span class="brand-line-2">HACKATHON <span class="year">2026</span></span>
+        </div>
+        <span class="brand-sub">ALPHA<span class="accent-cyan">ROULETTE</span> · POWERED BY ALPHARAMOS</span>
+      </div>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="soundToggle" type="button" aria-pressed="true" title="Activar / desactivar sonido">
+          <span class="icon-on" aria-hidden="true">&#128266;</span>
+          <span class="icon-off" aria-hidden="true">&#128263;</span>
+          <span class="sr-only">Sonido</span>
+        </button>
+        <button class="icon-btn" id="presentationToggle" type="button" aria-pressed="false" title="Modo presentación">
+          <span aria-hidden="true">&#9635;</span>
+          <span class="sr-only">Modo presentación</span>
+        </button>
+        <button class="icon-btn" id="fullscreenToggle" type="button" title="Pantalla completa">
+          <span aria-hidden="true">&#9974;</span>
+          <span class="sr-only">Pantalla completa</span>
+        </button>
+        <button class="icon-btn icon-btn--danger" id="resetSession" type="button" title="Reiniciar sesión">
+          <span aria-hidden="true">&#8635;</span>
+          <span class="sr-only">Reiniciar sesión</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===================== MAIN ===================== -->
+    <main class="app-main">
+      <!-- ---------- CENTER STAGE ---------- -->
+      <section class="stage" aria-label="Ruleta de sorteo">
+        <div class="prize-bar">
+          <label class="prize-field" for="prizeInput">
+            <span class="prize-label">&#127873; PREMIO ACTUAL</span>
+            <input
+              type="text"
+              id="prizeInput"
+              class="prize-input"
+              placeholder="Escribe el premio (ej. AirPods Pro)"
+              maxlength="60"
+              autocomplete="off" />
+          </label>
+        </div>
+
+        <div class="wheel-area">
+          <div class="wheel-wrap" id="wheelWrap">
+            <div class="wheel-glow" aria-hidden="true"></div>
+            <div class="wheel-pointer" id="wheelPointer" aria-hidden="true"></div>
+            <canvas id="wheel" class="wheel-canvas" width="900" height="900"
+                    role="img" aria-label="Ruleta de participantes"></canvas>
+            <button class="wheel-hub" id="hubSpin" type="button" title="Girar" aria-label="Girar ruleta">
+              <svg viewBox="0 0 64 64" width="100%" height="100%" aria-hidden="true">
+                <defs>
+                  <linearGradient id="hubGrad" x1="0" y1="1" x2="1" y2="0">
+                    <stop offset="0" stop-color="#0066FF" />
+                    <stop offset="0.55" stop-color="#00C2FF" />
+                    <stop offset="1" stop-color="#A256FF" />
+                  </linearGradient>
+                </defs>
+                <path d="M16 50 L31 14 L38 14 L30 34 L23 34 Z" fill="url(#hubGrad)" />
+                <path d="M34 50 L49 14 L42 14 L31 42 Z" fill="url(#hubGrad)" />
+                <text x="26" y="60" font-family="monospace" font-size="11" font-weight="700" fill="#00C2FF">&lt;/&gt;</text>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Soly idle, next to the wheel -->
+          <figure class="soly soly--idle" id="solyIdle">
+            <img src="assets/soly.png" alt="Soly, mascota de AlphaRamos" class="soly-img" />
+            <figcaption class="soly-caption">
+              <span class="soly-hi">&iexcl;Hola, soy <strong>Soly</strong>!</span>
+              <span class="soly-sub">Listo para el sorteo</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="spin-controls">
+          <button class="spin-btn" id="spinBtn" type="button">
+            <span class="spin-btn-label">GIRAR</span>
+          </button>
+          <p class="spin-hint" id="spinHint">&iexcl;MUCHA <span class="accent-green">SUERTE</span>!</p>
+          <p class="spin-key-hint">Pulsa <kbd>Espacio</kbd> para girar</p>
+        </div>
+      </section>
+
+      <!-- ---------- SIDEBAR ---------- -->
+      <aside class="sidebar" id="sidebar" aria-label="Administración de participantes">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 class="panel-title">PARTICIPANTES</h2>
+            <span class="count-badge" id="participantCount">0</span>
+          </div>
+          <textarea
+            id="participantsInput"
+            class="participants-input"
+            spellcheck="false"
+            autocomplete="off"
+            placeholder="Un nombre por línea.&#10;Puedes pegar una columna desde Excel.&#10;&#10;María Pérez&#10;José Díaz&#10;Laura Gómez&#10;Carlos Ramos"></textarea>
+          <p class="panel-note" id="participantsNote">Los nombres se guardan y actualizan la ruleta automáticamente.</p>
+        </div>
+
+        <div class="panel panel--winners">
+          <div class="panel-head">
+            <h2 class="panel-title">GANADORES</h2>
+            <button class="link-btn" id="clearHistory" type="button">Limpiar historial</button>
+          </div>
+          <ol class="winners-list" id="winnersList" aria-live="polite">
+            <li class="winners-empty">Aún no hay ganadores confirmados.</li>
+          </ol>
+        </div>
+      </aside>
+    </main>
+
+    <button class="sidebar-toggle" id="sidebarToggle" type="button" title="Mostrar / ocultar panel">
+      <span aria-hidden="true">&#9776;</span>
+      <span class="sr-only">Mostrar u ocultar panel</span>
+    </button>
+  </div>
+
+  <!-- ===================== WINNER MODAL ===================== -->
+  <div class="winner-overlay" id="winnerOverlay" role="dialog" aria-modal="true" aria-labelledby="winnerTitle" hidden>
+    <canvas class="confetti-canvas" id="confetti" aria-hidden="true"></canvas>
+    <div class="winner-card">
+      <p class="winner-eyebrow" id="winnerTitle">&iexcl;TENEMOS <span class="accent-green">GANADOR</span>!</p>
+      <figure class="soly soly--celebrate">
+        <img src="assets/soly-celebra.png" alt="Soly celebrando" class="soly-img" />
+      </figure>
+      <h2 class="winner-name" id="winnerName">—</h2>
+      <p class="winner-prize" id="winnerPrize" hidden>Premio: <span id="winnerPrizeValue"></span></p>
+      <p class="winner-congrats">&iexcl;Felicidades!</p>
+      <div class="winner-actions">
+        <button class="btn btn--primary" id="confirmWinner" type="button">CONFIRMAR GANADOR</button>
+        <button class="btn btn--ghost" id="repeatDraw" type="button">REPETIR SORTEO</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== CONFIRM DIALOG ===================== -->
+  <div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmMessage" hidden>
+    <div class="confirm-card">
+      <p class="confirm-message" id="confirmMessage">¿Estás seguro?</p>
+      <div class="confirm-actions">
+        <button class="btn btn--danger" id="confirmYes" type="button">Sí, continuar</button>
+        <button class="btn btn--ghost" id="confirmNo" type="button">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live region for screen readers -->
+  <div class="sr-only" aria-live="assertive" id="liveRegion"></div>
+
+  <script src="alpha-core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pruebas · AlphaRamos Roulette</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0; padding: 32px;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: #0E0F12; color: #E5E6E6;
+    }
+    h1 { font-size: 20px; letter-spacing: 2px; }
+    h1 span { color: #00C2FF; }
+    .summary { font-size: 16px; margin: 12px 0 24px; padding: 12px 16px; border-radius: 10px; background: #1A1D22; }
+    .summary.ok { border-left: 4px solid #2ED67B; }
+    .summary.fail { border-left: 4px solid #ff5470; }
+    ul { list-style: none; padding: 0; max-width: 900px; }
+    li { padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; background: #15181e; display: flex; gap: 10px; align-items: baseline; }
+    .mark { font-weight: 700; }
+    .pass .mark { color: #2ED67B; }
+    .fail .mark { color: #ff5470; }
+    .err { color: #ff8497; font-size: 13px; margin-top: 4px; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>PRUEBAS · ALPHA<span>ROULETTE</span></h1>
+  <div class="summary" id="summary">Ejecutando…</div>
+  <ul id="results"></ul>
+
+  <script src="../alpha-core.js"></script>
+  <script src="harness.js"></script>
+  <script src="spec.js"></script>
+  <script>
+    (function () {
+      var runner = TestHarness.createRunner();
+      AlphaSpec.register(runner.t, window.AlphaCore);
+      var results = runner.run();
+
+      var list = document.getElementById('results');
+      var passed = 0;
+      results.forEach(function (r) {
+        if (r.pass) passed++;
+        var li = document.createElement('li');
+        li.className = r.pass ? 'pass' : 'fail';
+        var mark = document.createElement('span');
+        mark.className = 'mark';
+        mark.textContent = r.pass ? '\u2713' : '\u2717';
+        var body = document.createElement('div');
+        var name = document.createElement('div');
+        name.textContent = r.name;
+        body.appendChild(name);
+        if (!r.pass) {
+          var err = document.createElement('div');
+          err.className = 'err';
+          err.textContent = '\u2192 ' + r.error;
+          body.appendChild(err);
+        }
+        li.appendChild(mark);
+        li.appendChild(body);
+        list.appendChild(li);
+      });
+
+      var summary = document.getElementById('summary');
+      var allOk = passed === results.length;
+      summary.className = 'summary ' + (allOk ? 'ok' : 'fail');
+      summary.textContent = passed + ' / ' + results.length + ' pruebas superadas';
+    })();
+  </script>
+</body>
+</html>

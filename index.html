@@ -10,6 +10,7 @@
 <body>
   <!-- Decorative tech background layer -->
   <div class="bg-decor" aria-hidden="true">
+    <canvas class="fx-canvas" id="fxCanvas"></canvas>
     <span class="bg-glyph bg-glyph--1">&lt;/&gt;</span>
     <span class="bg-glyph bg-glyph--2">{ }</span>
     <span class="bg-glyph bg-glyph--3">&lt;/&gt;</span>
@@ -20,25 +21,10 @@
     <!-- ===================== HEADER ===================== -->
     <header class="app-header">
       <div class="brand">
-        <span class="brand-logo" aria-hidden="true">
-          <!-- AlphaRamos mark: two-stroke A + code symbol -->
-          <svg viewBox="0 0 64 64" width="52" height="52" role="img" aria-label="AlphaRamos">
-            <defs>
-              <linearGradient id="aGrad" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0" stop-color="#0066FF" />
-                <stop offset="0.5" stop-color="#00C2FF" />
-                <stop offset="1" stop-color="#A256FF" />
-              </linearGradient>
-            </defs>
-            <path d="M14 52 L30 12 L38 12 L30 34 L22 34 Z" fill="url(#aGrad)" />
-            <path d="M34 52 L50 12 L42 12 L30 44 Z" fill="url(#aGrad)" opacity="0.92" />
-            <text x="41" y="49" font-family="monospace" font-size="12" font-weight="700" fill="#00C2FF">&lt;/&gt;</text>
-          </svg>
+        <span class="brand-plate">
+          <img src="assets/logo-version-dark.png"
+               alt="AlphaRamos Hackathon 2026" class="brand-logo-img" />
         </span>
-        <div class="brand-text">
-          <span class="brand-line-1">ALPHA<span class="accent">RAMOS</span></span>
-          <span class="brand-line-2">HACKATHON <span class="year">2026</span></span>
-        </div>
         <span class="brand-sub">ALPHA<span class="accent-cyan">ROULETTE</span> · POWERED BY ALPHARAMOS</span>
       </div>
 
@@ -67,19 +53,6 @@
     <main class="app-main">
       <!-- ---------- CENTER STAGE ---------- -->
       <section class="stage" aria-label="Ruleta de sorteo">
-        <div class="prize-bar">
-          <label class="prize-field" for="prizeInput">
-            <span class="prize-label">&#127873; PREMIO ACTUAL</span>
-            <input
-              type="text"
-              id="prizeInput"
-              class="prize-input"
-              placeholder="Escribe el premio (ej. AirPods Pro)"
-              maxlength="60"
-              autocomplete="off" />
-          </label>
-        </div>
-
         <div class="wheel-area">
           <div class="wheel-wrap" id="wheelWrap">
             <div class="wheel-glow" aria-hidden="true"></div>
@@ -104,7 +77,7 @@
 
           <!-- Soly idle, next to the wheel -->
           <figure class="soly soly--idle" id="solyIdle">
-            <img src="assets/soly.png" alt="Soly, mascota de AlphaRamos" class="soly-img" />
+            <img src="assets/soly-png.png" alt="Soly, mascota de AlphaRamos" class="soly-img" />
             <figcaption class="soly-caption">
               <span class="soly-hi">&iexcl;Hola, soy <strong>Soly</strong>!</span>
               <span class="soly-sub">Listo para el sorteo</span>
@@ -158,17 +131,15 @@
   <!-- ===================== WINNER MODAL ===================== -->
   <div class="winner-overlay" id="winnerOverlay" role="dialog" aria-modal="true" aria-labelledby="winnerTitle" hidden>
     <canvas class="confetti-canvas" id="confetti" aria-hidden="true"></canvas>
+    <p class="winner-eyebrow" id="winnerTitle">&iexcl;TENEMOS <span class="accent-green">GANADOR</span>!</p>
     <div class="winner-card">
-      <p class="winner-eyebrow" id="winnerTitle">&iexcl;TENEMOS <span class="accent-green">GANADOR</span>!</p>
       <figure class="soly soly--celebrate">
-        <img src="assets/soly-celebra.png" alt="Soly celebrando" class="soly-img" />
+        <img src="assets/soly-png.png" alt="Soly celebrando" class="soly-img" />
       </figure>
       <h2 class="winner-name" id="winnerName">—</h2>
-      <p class="winner-prize" id="winnerPrize" hidden>Premio: <span id="winnerPrizeValue"></span></p>
       <p class="winner-congrats">&iexcl;Felicidades!</p>
       <div class="winner-actions">
-        <button class="btn btn--primary" id="confirmWinner" type="button">CONFIRMAR GANADOR</button>
-        <button class="btn btn--ghost" id="repeatDraw" type="button">REPETIR SORTEO</button>
+        <button class="btn btn--primary" id="continueWinner" type="button">CONTINUAR</button>
       </div>
     </div>
   </div>

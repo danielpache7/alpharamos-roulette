@@ -77,7 +77,9 @@
    */
   function activeParticipants(text, winners) {
     var all = parseParticipants(text);
-    var won = new Set((winners || []).map(function (w) { return String(w); }));
+    var won = new Set((winners || []).map(function (w) {
+      return String(w).trim().toLowerCase();
+    }));
     var seen = new Set();
     var result = [];
     for (var i = 0; i < all.length; i++) {
@@ -85,7 +87,7 @@
       var key = name.toLowerCase();
       if (seen.has(key)) continue;
       seen.add(key);
-      if (!won.has(name)) result.push(name);
+      if (!won.has(key)) result.push(name);
     }
     return result;
   }

@@ -645,7 +645,7 @@ button { font-family: inherit; }
   margin: 6px 0;
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(44px, 8vw, 120px);
+  font-size: clamp(38px, 6vw, 90px);
   line-height: 1.02;
   letter-spacing: 2px;
   text-transform: uppercase;
